@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mikrobiologie Lernplattform — DE ↔ EN</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --card:#f8f9fb;
+    --accent:#0b66ff;
+    --muted:#6b7280;
+    --shadow: 0 6px 18px rgba(20,24,40,0.06);
+    --radius:10px;
+    --max-width:1200px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:#111827;}
+  .container{max-width:var(--max-width);margin:18px auto;padding:18px;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  h1{font-size:20px;margin:0}
+  .subtitle{color:var(--muted);font-size:13px}
+  .topbar{display:flex;gap:12px;align-items:center;margin:12px 0}
+  .search{flex:1;display:flex;gap:8px}
+  .search input{flex:1;padding:10px 12px;border:1px solid #e6e9ef;border-radius:8px;font-size:14px}
+  .search button{padding:10px 12px;border-radius:8px;border:1px solid #e6e9ef;background:#fff;cursor:pointer}
+  .layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
+  /* Sidebar */
+  .sidebar{background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);height:calc(100vh - 150px);overflow:auto}
+  .dict-search{display:flex;gap:8px;margin-bottom:10px}
+  .dict-search input{flex:1;padding:8px;border-radius:8px;border:1px solid #e6e9ef}
+  .dict-list{list-style:none;padding:0;margin:0}
+  .dict-item{padding:8px;border-radius:8px;display:flex;justify-content:space-between;gap:10px;cursor:pointer}
+  .dict-item:hover{background:#fff}
+  .dict-term{font-weight:600}
+  .dict-mean{color:var(--muted);font-size:13px}
+  .note-area{margin-top:12px}
+  .note-area textarea{width:100%;height:120px;padding:10px;border-radius:8px;border:1px solid #e6e9ef}
+  .note-actions{display:flex;gap:8px;margin-top:8px}
+  button.primary{background:var(--accent);color:#fff;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
+  button.ghost{background:#fff;border:1px solid #e6e9ef;padding:8px 10px;border-radius:8px;cursor:pointer}
+  /* Main content */
+  .card{background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:var(--shadow)}
+  .categories{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .cat-btn{padding:8px 12px;border-radius:999px;border:1px solid #e6e9ef;background:#fff;cursor:pointer;font-size:14px}
+  .cat-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .accordion{margin-top:8px}
+  .topic{border-radius:10px;margin-bottom:10px;overflow:hidden;border:1px solid #eef2ff}
+  .topic .head{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fff;cursor:pointer}
+  .topic .head h3{margin:0;font-size:15px}
+  .topic .body{padding:14px;background:var(--card);display:none}
+  .topic.open .body{display:block}
+  .term{background:#fff4db;border-radius:6px;padding:2px 6px;border:1px dashed #f59e0b;cursor:pointer;position:relative}
+  /* tooltip/popover */
+  .popover{position:fixed;background:#fff;border:1px solid #e6e9ef;padding:8px 10px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,42,0.08);z-index:60;display:none}
+  .popover.visible{display:block}
+  .small{font-size:13px;color:var(--muted)}
+  .img-placeholder{width:100%;height:160px;border-radius:8px;background:linear-gradient(135deg,#f1f5f9,#ffffff);display:flex;align-items:center;justify-content:center;color:var(--muted);margin-top:12px}
+  .meta{display:flex;gap:8px;align-items:center;margin-top:10px}
+  .chip{background:#fff;border:1px solid #e6e9ef;padding:6px 8px;border-radius:6px;font-size:13px}
+  .quiz{margin-top:12px;padding:10px;border-radius:8px;background:#fff;border:1px solid #e6e9ef}
+  .quiz h4{margin:0 0 8px 0;font-size:15px}
+  .answers{display:flex;flex-direction:column;gap:8px}
+  .answer{padding:8px;border-radius:8px;border:1px solid #eef2ff;background:#fff;cursor:pointer}
+  .answer.correct{border-color:green;background:#f0fff4}
+  .answer.wrong{border-color:red;background:#fff4f4}
+  .interview{margin-top:12px;padding:10px;background:#fff;border-radius:8px;border:1px solid #e6e9ef}
+  .smallbtn{font-size:13px;padding:6px 8px;border-radius:6px;border:1px solid #e6e9ef;background:#fff;cursor:pointer}
+  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+  @media(max-width:880px){.layout{grid-template-columns:1fr;}.sidebar{height:auto}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Mikrobiologie (DE) — Lernplattform</h1>
+      <div class="subtitle">Lerne Mikrobiologie auf Deutsch — englische Übersetzungen auf Hover/Click. 50+ Themen, Quizzes, Interview‑Antworten & Notizen.</div>
+    </div>
+  </header>
+
+  <div class="topbar">
+    <div class="search">
+      <input id="globalSearch" placeholder="Suche Themen, Begriffe oder Stichwörter (z. B. 'PCR' oder 'Bakterien')" />
+      <button id="searchBtn">Suchen</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="smallbtn" id="focusDict">Alt+K → Wörterbuch</button>
+      <button class="smallbtn" id="exportAll">Export Notes</button>
+      <button class="smallbtn" id="importAll">Import Notes</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar card">
+      <strong>Wörterbuch (DE → EN)</strong>
+      <div class="dict-search" style="margin-top:8px">
+        <input id="dictSearch" placeholder="Wörterbuch durchsuchen (z. B. 'Kokken')" />
+        <button id="dictClear">Clear</button>
+      </div>
+      <ul id="dictList" class="dict-list" aria-live="polite"></ul>
+
+      <div class="note-area">
+        <strong>Globale Notizen</strong>
+        <textarea id="globalNotes" placeholder="Allgemeine Notizen... (werden lokal gespeichert)"></textarea>
+        <div class="note-actions">
+          <button class="primary" id="saveGlobal">Speichern</button>
+          <button class="ghost" id="clearGlobal">Löschen</button>
+        </div>
+        <div style="margin-top:8px;font-size:13px;color:var(--muted)">Notizen sind lokal gespeichert und können exportiert/importiert werden.</div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="card">
+        <div class="categories" id="categories"></div>
+        <div class="accordion" id="topics"></div>
+      </div>
+
+      <div style="height:12px"></div>
+      <div id="topicTemplate" style="display:none"></div>
+      <div class="popover" id="popover"></div>
+      <footer>Erstellt für deinen Übergang von Englisch → Deutsch in Mikrobiologie. LocalStorage verwendet für Notizen & Favoriten.</footer>
+    </main>
+  </div>
+</div>
+
+<script>
+/* ============
+ Data (embedded). Two arrays:
+ - categories: structure of categories with topic ids
+ - topics: objects with id, title, category, content (array of paragraphs), terms (list of {de,en}), quiz, interview Q/A, img (svg)
+ - dictionary: big list of {de,en}
+ For performance & clarity: 25 'full' topics with 3 paragraphs each, and 25 'short' topics with 1 paragraph.
+ ============ */
+
+const data = {
+ categories: [
+  {id:'allg', title:'Allgemeine Mikrobiologie'},
+  {id:'bakterien', title:'Bakteriologie'},
+  {id:'viren', title:'Virologie'},
+  {id:'pilze', title:'Mykologie'},
+  {id:'parasiten', title:'Parasitologie'},
+  {id:'hygiene', title:'Lebensmittel & Wasserhygiene'},
+  {id:'molekular', title:'Molekulare & Angewandte Mikrobiologie'}
+ ],
+ topics: [
+  // ----- 25 full topics (3 short paragraphs each, quiz, interview)
+  {
+    id:'t1',
+    category:'allg',
+    title:'Mikroorganismen — Einführung',
+    content: [
+      "Mikroorganismen sind einzellige oder kolonisierende Lebewesen wie <span class='term' data-en='bacteria'>Bakterien</span>, <span class='term' data-en='fungi'>Pilze</span>, <span class='term' data-en='viruses'>Viren</span> und <span class='term' data-en='protozoa'>Protozoen</span>. Sie spielen zentrale Rollen in Ökosystemen, in der Biotechnologie und in der Medizin. In Laboren untersuchen wir ihre Morphologie, Physiologie und Interaktionen.",
+      "Die Wachstumsbedingungen — Temperatur, pH, Wasseraktivität und Nährstoffe — bestimmen, welche Arten dominieren. Für die praktische Arbeit sind Sterilität, aseptische Techniken und richtige Kulturbedingungen grundlegend. Eine klare Dokumentation und Probenkennzeichnung sind entscheidend für die Qualität der Ergebnisse.",
+      "Moderne Methoden wie <span class='term' data-en='PCR'>PCR</span> und <span class='term' data-en='sequencing'>Sequenzierung</span> ergänzen klassische Kulturmethoden. Laborpersonal muss sowohl mikroskopische als auch molekulare Techniken beherrschen, um Diagnosen sicher und effizient zu stellen."
+    ],
+    terms:['Bakterien','Pilze','Viren','Protozoen','PCR','Sequenzierung'],
+    quiz:{
+      q: "Welche Bedingung ist NICHT typisch für das bakterielle Wachstum?",
+      options: ["Temperatur","Lichtintensität","pH","Nährstoffverfügbarkeit"],
+      answer:1
+    },
+    interview:{
+      q:"Beschreiben Sie kurz, wie Sie eine sterile Technik durchführen.",
+      a:"Ich beginne mit Händehygiene, entnehme Materialien aus sterilen Verpackungen, flamme den Arbeitsbereich oder benutze eine Sicherheitsbank, minimieren Kontakt mit kontaminierten Flächen und dokumentiere jeden Arbeitsschritt."
+    },
+    img: null
+  },
+  {
+    id:'t2', category:'allg', title:'Mikroskopische Techniken',
+    content:[
+      "Die Lichtmikroskopie (Hellfeld, Phasenkontrast) ist das Fundament zur visuellen Analyse von Mikroorganismen. Mit Färbungen wie der Gram-Färbung kann man Bakterien in Gram-positiv und Gram-negativ unterscheiden und erste Hinweise auf Zellwandstruktur erhalten.",
+      "Die elektronenmikroskopische Betrachtung (TEM/SEM) ermöglicht hochauflösende Einblicke in die Ultrastruktur, ist jedoch aufwändiger in Vorbereitung und Betrieb. Für routinemäßige Diagnostik genügen häufig Lichtmikroskope plus Färbeverfahren.",
+      "Digitale Bildgebung und Analyse-Software werden zunehmend eingesetzt, um Zellzählung, Morphometrie oder Fluoreszenzsignale automatisiert auszuwerten. Ein gutes Verständnis optischer Prinzipien verbessert die Qualitätskontrolle und Interpretation."
+    ],
+    terms:['Hellfeld','Phasenkontrast','Gram-Färbung','TEM','SEM','Fluoreszenz'],
+    quiz:{q:"Welche Färbung trennt Bakterien nach Zellwandstruktur?",options:["Gram-Färbung","Hämatoxylin","Giemsa","Ziehl-Neelsen"],answer:0},
+    interview:{q:"Wie würden Sie eine Gram-Färbung durchführen (Kurzbeschreibung)?",a:"Auf ein Objektträger einen Tropfen der Kultur aufbringen, trocknen, fixieren, Kristallviolett, Jod, Entfärbung (Alkohol), Gegenfärbung mit Safranin; dann unter dem Mikroskop beurteilen."},
+    img:null
+  },
+  {
+    id:'t3', category:'bakterien', title:'Bakterienaufbau & Zellwand',
+    content:[
+      "Die Bakterienzelle besitzt eine Zellmembran, manchmal eine äußere Membran und eine Zellwand, die aus Peptidoglykan besteht. Gram-positive Bakterien haben eine dickere Peptidoglykanschicht, während Gram-negative Bakterien eine dünne Schicht und eine äußere Membran besitzen.",
+      "Strukturen wie Kapseln, Flagellen und Pili beeinflussen Virulenz, Motilität und Anheftung. Die Kapsel wirkt oft als Schutz vor Phagozytose, während Pili für Konjugation und Adhäsion wichtig sind.",
+      "Das Verständnis der Zellwand ist klinisch relevant: Viele Antibiotika (z. B. Betalaktame) hemmen die Peptidoglykanbiosynthese. Resistenzmechanismen wie Enzymproduktion oder Effluxpumpen verändern therapeutische Entscheidungen."
+    ],
+    terms:['Zellmembran','Peptidoglykan','Kapsel','Flagellen','Pili','Betalaktame'],
+    quiz:{q:"Welches Structuralmerkmal unterscheidet Gram-positiv von Gram-negativ?",options:["Kapsel","Pili","Peptidoglykan-Dicke","Flagellen"],answer:2},
+    interview:{q:"Erklären Sie in einfachen Worten, warum Gram-negative Bakterien oft resistenter sind.",a:"Die äußere Membran erschwert das Eindringen bestimmter Antibiotika und enthält Porine; zusätzlich können Enzyme wie Betalaktamasen im Periplasma Antibiotika inaktivieren."},
+    img:null
+  },
+  {
+    id:'t4', category:'bakterien', title:'Wachstumsphasen von Bakterien',
+    content:[
+      "Bakterien durchlaufen klassisch Lag-, Log-, Stationär- und Absterbephase. In der Lag-Phase passen sich Zellen an die Umgebung an; in der Log-Phase verläuft die Teilung exponentiell.",
+      "In der Stationärphase gleichen Wachstum und Absterben einander aus; limitierende Faktoren sind Nährstoffe und Akkumulation toxischer Metaboliten. Physiologische Zustände ändern sich — z. B. erhöhte Sporulation oder Stressproteine.",
+      "Für Kultur- und Anwendungsplanung ist die Kenntnis der Phasen wichtig: Antibiotika wirken oft besser auf aktive, teilende Zellen; Toxinproduktion kann in spezifischen Phasen zunehmen."
+    ],
+    terms:['Lag-Phase','Log-Phase','Stationärphase','Sporulation','Metaboliten'],
+    quiz:{q:"In welcher Phase teilen sich Zellen exponentiell?",options:["Lag-Phase","Log-Phase","Stationärphase","Absterbephase"],answer:1},
+    interview:{q:"Wie würden Sie die optimale Erntezeit für eine proteinproduzierende Kultur bestimmen?",a:"Anhand einer Wachstumskurve (OD-Messungen) die Phase bestimmen; für maximale Produktivität meist während der späten Log- oder frühen Stationärphase ernten und Parameter dokumentieren."},
+    img:null
+  },
+  {
+    id:'t5', category:'bakterien', title:'Kulturmedien & Inokulation',
+    content:[
+      "Medien können allgemein-nährstoffreich (z. B. LB, TSB) oder selektiv/differenziell (z. B. MacConkey) sein. Die Wahl des Mediums richtet sich nach dem Ziel: Isolierung, Differenzierung oder Anreicherung.",
+      "Sterile Technik, korrektes Autoklavieren und Filtersterilisation organischer Lösungen sind Grundlagen. Die Inokulation erfolgt aseptisch mit Impföse, Pipette oder Streichkultur, bei Bedarf in Atmosphäre mit CO₂ oder anaeroben Bedingungen.",
+      "Kontrollproben (Positiv-/Negativkontrollen) und Dokumentation sorgen für Nachvollziehbarkeit. Für quantitative Arbeiten sind Verdünnungsreihen und Plattierungsmethoden wie Spread/Pour hilfreich."
+    ],
+    terms:['LB','TSB','MacConkey','Autoklav','Anaerob','Verdünnungsreihe'],
+    quiz:{q:"Welches Medium ist selektiv für Gram-negative Enterobakterien?",options:["Mannit-Salz-Agar","MacConkey","Sabouraud","Blood Agar"],answer:1},
+    interview:{q:"Was ist bei der Vorbereitung eines Maschinen-autoklavierten Mediums wichtig?",a:"Korrekter pH, geeignete Verschlüsse, keine luftdichten Dichtungen, ausreichende Füllhöhe und passende Zyklen für Volumen und Dichte; Chargendokumentation."},
+    img:null
+  },
+  {
+    id:'t6', category:'molekular', title:'Polymerase‑Kettenreaktion (PCR)',
+    content:[
+      "Die PCR ist eine Methode zur spezifischen Vervielfältigung von DNA-Abschnitten. Sie verwendet Primer, Nukleotide, eine thermostabile Polymerase und thermische Zyklen (Denaturierung, Annealing, Elongation).",
+      "Quantitative PCR (qPCR) erlaubt neben dem Nachweis auch die Quantifizierung von Zielsequenzen. Real‑time Systeme messen Fluoreszenz in jedem Zyklus. Vorteil: Sensitivität und Geschwindigkeit; Nachteil: Gefahr von Kontaminationen.",
+      "Gute PCR‑Arbeitsabläufe trennen Prä- und Post‑PCR Bereiche, nutzen Kontrollreaktionen (No‑template control, positive control) und validierte Primer. Für die Mutationserkennung werden Sequenzierung oder HRM‑Analysen kombiniert."
+    ],
+    terms:['Primer','qPCR','No-template control','Denaturierung','Annealing','Elongation'],
+    quiz:{q:"Welche Komponente bestimmt die Spezifität der PCR?",options:["Polymerase","Primer","dNTPs","Puffer"],answer:1},
+    interview:{q:"Wie verhindern Sie Kontaminationen in der PCR?",a:"Raumtrennung, UV-Depyrogenisierung, Einmal-Werkzeuge, Filterspitzen, negative Kontrollen und aliquottierte Reagenzien verwenden."},
+    img:null
+  },
+  {
+    id:'t7', category:'molekular', title:'Sequenzierung & Genomik',
+    content:[
+      "DNA‑Sequenzierung (Sanger, Next‑Generation Sequencing) gibt Einsicht in Gene, Resistenzmechanismen und Populationsstrukturen. NGS erlaubt parallele Analyse vieler Proben bzw. Genome und ist zentral für Epidemiologie.",
+      "Bioinformatische Analyse (Assembly, Alignments, Variant-Calling) ist notwendig, um Rohdaten in verwertbare Befunde zu transformieren. Qualitätskontrolle der Reads (Q‑Scores), Kontaminationsprüfung und Referenzdatenbanken sind essentiell.",
+      "In Laboren ermöglicht Sequenzierung Ausbruchsaufklärung, Resistenzdetektion und Typisierung. Datenschutz und ethische Aspekte bei Patientenproben sind zu beachten."
+    ],
+    terms:['Sanger','NGS','Assembly','Variant-Calling','Q-Score','Referenzdatenbank'],
+    quiz:{q:"Wofür steht NGS?",options:["Next-Generation Sequencing","New Gene System","Nucleotide Genomic Scan","None"],answer:0},
+    interview:{q:"Nennen Sie Vorteile von NGS in der Mikrobiologie.",a:"Hohe Parallelität, Aufklärung von Erregerpopulationen, Resistenzprofile, schnelle Typisierung und bessere Outbreak-Analysen."},
+    img:null
+  },
+  {
+    id:'t8', category:'viren', title:'Grundlagen der Virologie',
+    content:[
+      "Viren sind obligat intrazelluläre Parasiten ohne eigene Stoffwechselaktivität. Sie bestehen typischerweise aus Nukleinsäure (RNA oder DNA) und einer Kapsidhülle, manche besitzen eine zusätzliche Virushülle.",
+      "Die Infektionszyklen umfassen Adsorption, Penetration, Replikation, Zusammenbau und Freisetzung. Zelluläre Reaktionen wie Zytopathie oder Immunantwort bestimmen den Krankheitsverlauf.",
+      "In Laboren verwenden wir Zellkulturen, Antigentests, PCR oder serologische Verfahren, um Viren nachzuweisen. Biosicherheitsmaßnahmen variieren je nach Risikogruppe."
+    ],
+    terms:['RNA','DNA','Kapsid','Zytopathie','Zellkultur','Antigentest'],
+    quiz:{q:"Welche der folgenden Aussagen trifft auf Viren zu?",options:["Eigener Stoffwechsel","Obligat intrazellulär","Doppelte Membran","Q-Score relevant"],answer:1},
+    interview:{q:"Wie unterscheidet sich ein Antigentest von PCR?",a:"Antigentests detektieren Proteine (schnell, weniger sensitiv), PCR detektiert Nukleinsäure (hohe Sensitivität, länger bis Ergebnis)."},
+
+    img:null
+  },
+  {
+    id:'t9', category:'viren', title:'Virusvermehrung & -diagnostik',
+    content:[
+      "Virusvermehrung erfolgt entweder in Zellkulturen oder in geeigneten Organismen. Plaque‑Assays quantifizieren infektiöse Einheiten (PFU). Für schnellere Nachweise sind molekulare Tests verbreitet.",
+      "Serologische Tests (ELISA) messen Antikörperantworten und ergänzen direkte Nachweise. Bei akutem Verdacht ist Kombination aus direktem und indirektem Nachweis oft sinnvoll.",
+      "Präanalytik — Probenart, Transportmedium und Lagerbedingungen — beeinflusst Resultate stark. Vermeidung von RNA‑Degradation bei RNA‑Viren ist besonders wichtig."
+    ],
+    terms:['Plaque-Assay','PFU','ELISA','Präanalytik','RNA-Degradation'],
+    quiz:{q:"Was misst ein Plaque-Assay?",options:["DNA-Menge","Infektiöse Partikel (PFU)","Antikörper","Q-Score"],answer:1},
+    interview:{q:"Welche Proben sind geeignet für respiratorische Virus-PCR?",a:"Nasopharyngeal- oder Oropharyngealabstriche in geeignetem Transportmedium; Sputum bei tiefen Atemwegsinfektionen."},
+    img:null
+  },
+  {
+    id:'t10', category:'pilze', title:'Grundlagen der Mykologie',
+    content:[
+      "Pilze reichen von Einzellern (Hefen) bis zu mehrzelligen Schimmelpilzen. Sie haben eukaryotische Zellstruktur mit Zellkern und Organellen, was medikamentöse Therapie beeinflusst.",
+      "Pathogene Pilze verursachen oberflächliche Infektionen (Dermatomykosen), systemische Erkrankungen bei immunsupprimierten Patienten und Toxinproduktionen (Mykotoxine) in Lebensmitteln.",
+      "Diagnostik umfasst Kultur, Mikroskopie, Antigen‑/Antikörpertests sowie molekulare Verfahren. Die Auswahl von Antimykotika berücksichtigt Wirkmechanismus (Azole, Echinocandine) und Toxizität."
+    ],
+    terms:['Hefen','Schimmelpilze','Eukaryotisch','Mykotoxine','Azole','Echinocandine'],
+    quiz:{q:"Welches Merkmal unterscheidet Pilze von Bakterien?",options:["Zellwand","Eukaryotische Zellstruktur","DNA","Peptidoglykan"],answer:1},
+    interview:{q:"Wie würden Sie eine systemische Mykose vermuten?",a:"Anhaltspunkte sind Fieber, Sepsis-ähnliches Bild bei Risikopatienten, Konsultation mit Bildgebung und Blutkulturen sowie gezielte mykologische Tests."},
+    img:null
+  },
+  {
+    id:'t11', category:'pilze', title:'Hefen vs Schimmelpilze',
+    content:[
+      "Hefen (z. B. Candida) wachsen meist als einzellige Sprossbildner, Schimmelpilze bilden filamentöse Hyphen und Myzel. Morphologie beeinflusst Diagnostik und Therapie.",
+      "Candida-Arten sind Teil der normalen Mikrobiota, können aber opportunistisch Infektionen auslösen. Aspergillus kann Sporen in die Luft freisetzen und bei Immunsuppression invasive Erkrankungen verursachen.",
+      "Kulturelle Unterscheidung, MALDI-TOF Identifikation und Resistenztests leiten geeignete Antimykotika. Prophylaxe und Nosokomialhygiene reduzieren nosokomiale Pilzinfektionen."
+    ],
+    terms:['Candida','Aspergillus','Hyphen','Myzel','MALDI-TOF','Opportunistisch'],
+    quiz:{q:"Welche Pilze bilden Hyphen?",options:["Hefen","Schimmelpilze","Viren","Bakterien"],answer:1},
+    interview:{q:"Nennen Sie einen Risikofaktor für invasive Aspergillose.",a:"Schwere Neutropenie, immunsuppressive Therapie oder Stammzelltransplantation erhöhen das Risiko."},
+    img:null
+  },
+  {
+    id:'t12', category:'parasiten', title:'Parasitologie — Übersicht',
+    content:[
+      "Parasiten umfassen Protozoen, Helminthen und Arthropoden. Sie haben komplexe Lebenszyklen und oft spezifische Vektoren oder Zwischenwirte.",
+      "Klinisch führen sie zu verschiedensten Manifestationen: gastrointestinale Beschwerden, Blutparasitosen (z. B. Malaria) oder Gewebeinvasionen. Diagnostik benötigt oftmals mikroskopische Erkennung von Eiern, Oozysten oder Parasiten.",
+      "Prävention umfasst vektor‑ und sanitäre Kontrolle sowie medikamentöse Therapie. Reiserückkehrer-Anamnese ist bei Verdacht zentral."
+    ],
+    terms:['Protozoen','Helminthen','Vektoren','Oozysten','Malaria','Reiserückkehrer'],
+    quiz:{q:"Welche Gruppe enthält Bandwürmer?",options:["Protozoen","Helminthen","Bakterien","Viren"],answer:1},
+    interview:{q:"Welche Probe würden Sie bei Verdacht auf Darmparasiten anfordern?",a:"Mehrere Stuhlproben an aufeinanderfolgenden Tagen, ggf. Konzentrationstechniken und mikroskopische Untersuchung."},
+    img:null
+  },
+  {
+    id:'t13', category:'hygiene', title:'Lebensmittelmikrobiologie — Grundlagen',
+    content:[
+      "Lebensmittelmikrobiologie untersucht Mikroorganismen, die Lebensmittel verderben oder Krankheiten auslösen können. Pathogene wie Salmonella, Listeria oder E. coli sind zentral.",
+      "HACCP‑Konzepte (Hazard Analysis and Critical Control Points) strukturieren Gefahrenanalyse und Kontrollen entlang der Lebensmittelkette. Temperaturkontrolle, Hygiene und richtige Verarbeitung reduzieren Risiken.",
+      "Mikrobiologische Tests (Plattenzählungen, spez. Pathogen-Nachweise) sowie Produktstabilitätstests sichern die Qualität und Verbrauchersicherheit."
+    ],
+    terms:['Salmonella','Listeria','E. coli','HACCP','Plattenzählung','Pathogen'],
+    quiz:{q:"Was bedeutet HACCP?",options:["Hazard Analysis and Critical Control Points","High Altitude Control etc.","Heat Action Control"],answer:0},
+    interview:{q:"Nennen Sie eine kritische Kontrollstelle bei der Lebensmittelproduktion.",a:"Temperaturkontrolle während Kühlung oder Pasteurisation; z. B. Pasteurisieren bei definierten Zeiten/Temperaturen."},
+    img:null
+  },
+  {
+    id:'t14', category:'hygiene', title:'Wasserhygiene & Indikatororganismen',
+    content:[
+      "Wasserhygiene verwendet Indikatororganismen (z. B. coliforme Keime, E. coli) zur Beurteilung fäkaler Kontamination. Direkter Nachweis von Pathogenen ist aufwändiger.",
+      "Probenahme, Transport und Lagerung sind entscheidend, um Veränderungen der mikrobiellen Zusammensetzung zu vermeiden. Standardisierte Verfahren (z. B. Membranfiltration) werden genutzt.",
+      "Risikobewertungen in Wasserversorgung und Industrie berücksichtigen Belastung, Verwendungszweck und mögliche Expositionswege."
+    ],
+    terms:['Indikatororganismen','Coliforme','Membranfiltration','Probenahme','fäkal'],
+    quiz:{q:"Welcher Indikator deutet stark auf fäkale Verunreinigung hin?",options:["Pseudomonas","E. coli","Staphylococcus","Candida"],answer:1},
+    interview:{q:"Wie würden Sie die Qualität einer Trinkwasserprobe prüfen?",a:"Membranfiltration, Kulturen für Indikatororganismen, ggf. spezifische Tests für Legionella oder coliforme Keime; Dokumentation der Entnahmestelle."},
+    img:null
+  },
+  {
+    id:'t15', category:'molekular', title:'Proteomics & MALDI‑TOF',
+    content:[
+      "Proteomik-Methoden untersuchen Proteinmuster von Mikroorganismen; MALDI‑TOF MS ist in klinischen Laboren zur schnellen Identifikation etabliert.",
+      "MALDI‑TOF identifiziert Mikroorganismen durch Massenspektren von Ribosomenproteinen, ist sehr schnell und kosteneffizient pro Probe, benötigt jedoch referenzierte Datenbanken.",
+      "Für Resistenzanalysen werden zusätzlich molekulare Tests oder Phänotypisierung benötigt, da MALDI‑TOF selten direkte Resistenzinformationen liefert."
+    ],
+    terms:['Proteomik','MALDI-TOF','Massenspektrometrie','Ribosomenproteine','Datenbank'],
+    quiz:{q:"Worin liegt ein Vorteil von MALDI‑TOF gegenüber klassischen Tests?",options:["Schnelligkeit","Mehr Resistenzerkennung","Bessere Gram-Färbung","Niedriger Speicherbedarf"],answer:0},
+    interview:{q:"Wie funktioniert grob MALDI‑TOF?",a:"Ionisierung von Proteinen mittels Matrix, Messung der m/z-Verhältnisse; Vergleich des Spektrums mit Referenzdatenbanken zur Identifikation."},
+    img:null
+  },
+  {
+    id:'t16', category:'allg', title:'Antibiotika & Resistenzmechanismen',
+    content:[
+      "Antibiotika wirken über verschiedene Mechanismen: Hemmung der Zellwandsynthese, Störung der Proteinbiosynthese, Eingriff in Nukleinsäuremetabolismus oder Stoffwechselwege.",
+      "Resistenzen entstehen durch Mutationen, Enzymproduktion (z. B. Betalaktamasen), Zielveränderungen oder Effluxpumpen. Überwachung (AMR surveillance) ist zentral für Therapie und Epidemiologie.",
+      "Laboratorien führen Empfindlichkeitsprüfungen (MIC, Diskdiffusion) durch, um therapeutische Empfehlungen zu geben. Kenntnis lokaler Resistenzmuster ist klinisch wichtig."
+    ],
+    terms:['Antibiotika','Betalaktamasen','Mutationen','Effluxpumpen','MIC','Diskdiffusion'],
+    quiz:{q:"Was misst MIC?",options:["Minimal Inhibitory Concentration","Maximum Inhibitory Capacity","Microbial Infection Count","None"],answer:0},
+    interview:{q:"Erklären Sie kurz, wie eine Diskdiffusion funktioniert.",a:"Standardisierte Bakterieninokulation auf Agar; Antibiotikafilterplättchen platzieren; nach Inkubation Hemmhof messen; Interpretation anhand Standards."},
+    img:null
+  },
+  {
+    id:'t17', category:'bakterien', title:'Biofilme & klinische Relevanz',
+    content:[
+      "Biofilme sind Mikroorganismen in einer extrazellulären Matrix, die an Oberflächen haften. In medizinischen Kontexten sind sie relevant an Kathetern, Implantaten und Wundbelägen.",
+      "Biofilme schützen vor Antimikrobiellen und Immunabwehr, was Eradikation erschwert. Mechanismen umfassen reduzierte Stoffwechselaktivität und physische Barrieren.",
+      "Management umfasst Prävention (Oberflächenmodifikation), Frühdiagnose und kombinierte therapeutische Strategien, oft inklusive Entfernen kontaminierter Fremdkörper."
+    ],
+    terms:['Biofilm','extrazelluläre Matrix','Implantate','Katheter','Eradikation'],
+    quiz:{q:"Weshalb sind Biofilme schwer zu behandeln?",options:["Hohe Mutationsrate","Barrierewirkung der Matrix","Schnelles Wachstum","Vermehrte Antikörper"],answer:1},
+    interview:{q:"Welche Maßnahmen zur Prävention von Katheterinfektionen kennen Sie?",a:"Aseptische Anlage, kürzeste Liegezeit, Hautantiseptik, Schulung des Personals und Hygienerichtlinien beachten."},
+    img:null
+  },
+  {
+    id:'t18', category:'molekular', title:'Sonde‑ und Hybridisierungsmethoden',
+    content:[
+      "Sonde-basierte Methoden (z. B. FISH) markieren spezifische Nucleinsäuresequenzen in Zellen oder Gewebe mittels fluoreszierender Sonden.",
+      "FISH erlaubt räumliche Lokalisation von Mikroorganismen und ist nützlich bei der Diagnostik in Gewebeproben oder Biofilmuntersuchungen.",
+      "Methoden erfordern spezialisierte Protokolle für Fixierung, Denaturierung und Hybridisierung; Interpretation erfordert Erfahrung und geeignete Kontrollen."
+    ],
+    terms:['Sonde','FISH','Hybridisierung','Fixierung','Denaturierung'],
+    quiz:{q:"Wofür steht FISH?",options:["Fluorescence in situ hybridization","Fast In-situ Hybridization","Full In Solution Hybrid"],answer:0},
+    interview:{q:"Wann würden Sie FISH statt Kultur verwenden?",a:"Wenn rasche Lokalisierung in Gewebe oder Identifikation schwer kultivierbarer Erreger nötig ist, oder bei Biofilm-Analysen."},
+    img:null
+  },
+  {
+    id:'t19', category:'allg', title:'Sterilisation & Desinfektion',
+    content:[
+      "Sterilisation eliminiert alle lebenden Mikroorganismen, Desinfektion reduziert die Zahl pathogener Keime auf ein sicheres Maß. Methoden: Hitze (Autoklav), Chemikalien, Strahlung, Filtration.",
+      "Die Wahl richtet sich nach Materialverträglichkeit und Risiko. Autoklavieren (121°C, 15–20 min) ist Standard für belastbares Material; hitzeempfindliche Flüssigkeiten können filtriert werden.",
+      "Validierung von Sterilisationszyklen, biologische Indikatoren und regelmäßige Wartung der Geräte sind essenziell für Laborqualität."
+    ],
+    terms:['Sterilisation','Desinfektion','Autoklav','Filtration','Biologische Indikatoren'],
+    quiz:{q:"Welche Methode entfernt Mikroorganismen aus hitzeempfindlichen Flüssigkeiten?",options:["Autoklav","Filtration","UV-Strahlung","Pasteurisierung"],answer:1},
+    interview:{q:"Nennen Sie einen biologischen Indikator für Autoklav-Validierung.",a:"Sporen von Geobacillus stearothermophilus werden oft als biologische Indikatoren verwendet."},
+    img:null
+  },
+  {
+    id:'t20', category:'hygiene', title:'Personalhygiene & Laborsicherheit',
+    content:[
+      "Persönliche Schutzausrüstung (PSA), Händehygiene und Schulungen sind grundlegende Maßnahmen zur Reduktion von Arbeitsrisiken und Kontaminationen.",
+      "Sicherheitsstufen (BSL-1 bis BSL-4) beschreiben technische und organisatorische Anforderungen für Arbeiten mit Erregern unterschiedlicher Gefährdung.",
+      "Gefahrenanalyse, Notfallpläne und Impfmanagement für Mitarbeiter (z. B. Hepatitis B) sind Teil eines vollständigen Sicherheitskonzepts."
+    ],
+    terms:['PSA','Händehygiene','BSL','Gefahrenanalyse','Impfmanagement'],
+    quiz:{q:"Wofür steht BSL?",options:["Biosafety Level","Basic Safety Line","Biological Standard Limit"],answer:0},
+    interview:{q:"Was sind typische Elemente eines Notfallplans im Labor?",a:"Unfallmeldung, Erste Hilfe, Dekontamination, Dokumentation und Wiederanlaufprozeduren."},
+    img:null
+  },
+  {
+    id:'t21', category:'bakterien', title:'Sporenbildner (Bacillus, Clostridium)',
+    content:[
+      "Einige Bakterien bilden endosporen als Überdauerungsform. Bacillus und Clostridium sind bekanntes Beispiel; letztere umfassen wichtige Pathogene (z. B. C. difficile, C. botulinum).",
+      "Sporen sind hochresistent gegen Hitze, Chemie und Austrocknung. Für Sterilisationskonzepte ist ihre Eliminierung ein kritisches Kriterium.",
+      "Diagnostisch benötigt man spezielle Aufbereitungen und Wachstumskonzentrationen; Präsenz von Sporen beeinflusst Reinigungs- und Desinfektionsstrategien."
+    ],
+    terms:['Endosporen','Bacillus','Clostridium','C. difficile','C. botulinum'],
+    quiz:{q:"Warum sind Endosporen problematisch für Sterilisation?",options:["Sie vermehren sich schnell","Hohe Resistenz gegenüber hitze/chemie","Sie sind sichtbar","Sie sind eukaryotisch"],answer:1},
+    interview:{q:"Wie würden Sie auf einen Verdacht auf C. difficile reagieren?",a:"Stuhlproben anfordern für Toxin- oder PCR-Tests, Isolationsmaßnahmen für Patienten und Hygienemaßnahmen verstärken."},
+    img:null
+  },
+  {
+    id:'t22', category:'bakterien', title:'Antigen vs Antikörper-Nachweis',
+    content:[
+      "Antigentests detektieren Pathogen-spezifische Proteine; Antikörpertests messen die Immunantwort des Wirts. Beide haben unterschiedliche diagnostische Fenster und Anwendungen.",
+      "Antigennachweise sind oft schneller, aber weniger sensitiv als molekulare Methoden. Antikörpertests eignen sich zur Bestimmung vergangener Infektionen oder Immunitätsstatus.",
+      "Präzise Interpretation erfordert Kenntnis der Serokonversion, Kreuzreaktivitäten und Testleistungsparameter (Sensitivität, Spezifität)."
+    ],
+    terms:['Antigen','Antikörper','Serokonversion','Sensitivität','Spezifität'],
+    quiz:{q:"Was misst ein Antikörpertest primär?",options:["Viruslast","Immunsystemantwort","Bakterienanzahl","pH"],answer:1},
+    interview:{q:"Wann ist ein Antikörpertest ungeeignet?",a:"Bei akutem Verdacht kurz nach Infektion, da Antikörper noch nicht nachweisbar sind (Serokonversionsfenster)."},
+    img:null
+  },
+  {
+    id:'t23', category:'molekular', title:'Kontaminationskontrolle in molekularen Laboren',
+    content:[
+      "Mol-Labore trennen deutlich Prä- und Post-PCR Bereiche. Kontamination mit amplifizierten Produkten kann zu falsch-positiven Ergebnissen führen.",
+      "Einrichtungen nutzen UV‑Behandlung, separate Pipetten/Filterspitzen, Aliquote und negative Kontrollen, um Kreuzkontaminationen zu vermeiden.",
+      "Regelmäßige Partikelkontrollen sowie Labortraining sind notwendig, um die Qualität molekularer Befunde zu sichern."
+    ],
+    terms:['Prä-PCR','Post-PCR','UV-Behandlung','Aliquote','Kreuzkontamination'],
+    quiz:{q:"Warum ist Trennung von Prä- und Post-PCR wichtig?",options:["Bessere Temperaturkontrolle","Vermeidung von Kontaminationen","Geringerer Stromverbrauch","Höhere Geschwindigkeit"],answer:1},
+    interview:{q:"Beschreiben Sie kurz eine Maßnahme zur Kontaminationsvermeidung.",a:"Aliquotieren von Mastermix, Einwegmaterialien, räumliche Trennung und Einrichten dedizierter Arbeitsplätze."},
+    img:null
+  },
+  {
+    id:'t24', category:'molekular', title:'qPCR-Analyse und Ct‑Werte',
+    content:[
+      "Der Ct‑Wert (cycle threshold) ist der Zyklus, in dem die Fluoreszenz einen definierten Schwellwert überschreitet; er korreliert invers mit der Zielmenge in der Probe.",
+      "Vergleich von Ct‑Werten zwischen Proben bedarf Standardisierung und Kontrolle; Grenzwerte sind methodenspezifisch.",
+      "Richtige Kalibrierung, Standardkurven und Kontrollen sind Voraussetzung für quantitative Interpretationen; präanalytische Faktoren beeinflussen Ct stark."
+    ],
+    terms:['Ct-Wert','Fluoreszenz','Standardkurve','Kalibrierung','Quantifizierung'],
+    quiz:{q:"Was sagt ein niedriger Ct-Wert aus?",options:["Geringe Zielmenge","Hohe Zielmenge","Keine Aussage","Geringe Qualität"],answer:1},
+    interview:{q:"Wie interpretieren Sie Ct-Werte bei unsicheren Proben?",a:"Prüfen auf Inhibitoren, Wiederholung, Kontrollproben und ggf. alternative Methoden zur Bestätigung."},
+    img:null
+  },
+  {
+    id:'t25', category:'allg', title:'Qualitätsmanagement im Labor',
+    content:[
+      "Qualitätsmanagement umfasst SOPs, Validierungen, interne und externe Kontrollen sowie Zertifizierungen (z. B. ISO 15189 für medizinische Labore).",
+      "Dokumentation, Rekalibrierung von Geräten und Teilnahme an Ringversuchen sind Bestandteile einer guten Laborpraxis.",
+      "Fehleranalysen (CAPA), Personalqualifikation und kontinuierliche Weiterbildung sichern zuverlässige Befunde und Patientensicherheit."
+    ],
+    terms:['SOP','Validierung','ISO 15189','Ringversuch','CAPA'],
+    quiz:{q:"Wofür steht SOP?",options:["Standard Operating Procedure","Safety Operating Plan","Sample Order Protocol"],answer:0},
+    interview:{q:"Nennen Sie ein Element eines Laborsicherheitsprogramms.",a:"Regelmäßige Gerätekalibrierungen, Schulungen, SOPs und Teilnahme an Qualitätskontrollen."},
+    img:null
+  },
+
+  // ----- 25 short topics (1 paragraph each) -----
+  {id:'s26',category:'bakterien',title:'Oxidase-/Katalase-Test',content:["Schnelle biochemische Tests zur Differenzierung bakterieller Gattungen. Katalase spaltet Wasserstoffperoxid; Oxidase testet Cytochrom‑c‑Oxidase. Ergebnisse leiten weitere Identifikation ein."],terms:['Katalase','Oxidase'],quiz:null,interview:null,img:null},
+  {id:'s27',category:'bakterien',title:'Enterobakterien-Gruppe',content:["Enterobakterien sind gramnegative Stäbchen, viele sind Darmbewohner; einige (Salmonella, Shigella) sind pathogen. Biochemische Tests und Kultur sind wichtig für Identifikation."],terms:['Enterobakterien','Salmonella','Shigella'],quiz:null,interview:null,img:null},
+  {id:'s28',category:'viren',title:'RNA‑Viren vs DNA‑Viren',content:["RNA‑Viren haben oft höhere Mutationsraten; Diagnostik und Therapie können sich dadurch komplizieren. RNA‑Virentests benötigen Schutz vor RNasen."],terms:['RNA','DNA','RNasen'],quiz:null,interview:null,img:null},
+  {id:'s29',category:'pilze',title:'Antimykotika-Klassen',content:["Azole hemmen Ergosterol‑Synthese, Echinocandine wirken auf die Zellwand (β‑Glucan). Auswahl abhängig vom Erreger und Pharmakokinetik."],terms:['Azole','Ergosterol','Echinocandine','β-Glucan'],quiz:null,interview:null,img:null},
+  {id:'s30',category:'parasiten',title:'Malaria-Grundlagen',content:["Plasmodium-Arten werden durch Stechmücken übertragen; Diagnostik mittels Blutabstrich und Antigen-/PCR-Tests; Schwere Verläufe erfordern rasche Therapie."],terms:['Plasmodium','Stechmücken','Blutabstrich'],quiz:null,interview:null,img:null},
+  {id:'s31',category:'hygiene',title:'Legionellen-Kontrolle',content:["Legionellen vermehren sich in Warmwassersystemen; Überwachung, Temperaturmanagement und Desinfektion sind präventive Maßnahmen."],terms:['Legionellen','Warmwassersysteme','Desinfektion'],quiz:null,interview:null,img:null},
+  {id:'s32',category:'molekular',title:'Plasmide & Gentransfer',content:["Plasmide übertragen Gene (z. B. Resistenz) zwischen Bakterien; Konjugation ist ein wichtiger Mechanismus horizontaler Genübertragung."],terms:['Plasmide','Konjugation','Horizontale Genübertragung'],quiz:null,interview:null,img:null},
+  {id:'s33',category:'allg',title:'Virulenzfaktoren',content:["Virulenzfaktoren (Toxine, Adhäsine, Invasine) erhöhen Fähigkeit eines Erregers, Krankheit zu verursachen; Targets für Diagnostik und Therapie."],terms:['Virulenzfaktoren','Toxine','Adhäsine'],quiz:null,interview:null,img:null},
+  {id:'s34',category:'bakterien',title:'Empfindlichkeitsprüfung (VITEK, AST)',content:["Automatisierte Systeme (VITEK) und manuelle Methoden (MIC-Bestimmung) geben Hinweise zur Antibiotikawahl; Interpretation nach EUCAST/CLSI."],terms:['VITEK','MIC','EUCAST','CLSI'],quiz:null,interview:null,img:null},
+  {id:'s35',category:'molekular',title:'cDNA & Reverse Transkription',content:["Reverse Transkriptase wandelt RNA in cDNA um; wichtig für RT-PCR bei RNA‑Viren oder Genexpressionsanalysen."],terms:['cDNA','Reverse Transkriptase','RT-PCR'],quiz:null,interview:null,img:null},
+  {id:'s36',category:'viren',title:'Zytopathischer Effekt (CPE)',content:["CPE beschreibt strukturelle Veränderungen in Wirtszellen durch Viren; in Zellkulturen sichtbar und diagnostisch nützlich."],terms:['Zytopathischer Effekt','CPE','Zellkultur'],quiz:null,interview:null,img:null},
+  {id:'s37',category:'pilze',title:'Saprobionten vs Pathogene',content:["Viele Pilze sind Saprobionten (zersetzend) und nur einige sind pathologisch; Umweltüberwachung schließt beide Gruppen ein."],terms:['Saprobionten','Pathogene','Umweltüberwachung'],quiz:null,interview:null,img:null},
+  {id:'s38',category:'parasiten',title:'Toxoplasmose',content:["Toxoplasma gondii kann latent im Wirt verbleiben; Gefährdung in Schwangerschaft und für Immunsupprimierte; Serologie hilft bei Diagnostik."],terms:['Toxoplasma gondii','Latent','Serologie'],quiz:null,interview:null,img:null},
+  {id:'s39',category:'hygiene',title:'Sterilfilter (0.22 µm)',content:["Membranfilter mit 0.22 µm entfernen Bakterien aus Flüssigkeiten; für hitzeempfindliche Medien relevant."],terms:['Membranfilter','0.22 µm','Sterilfiltration'],quiz:null,interview:null,img:null},
+  {id:'s40',category:'allg',title:'Metabolische Profile',content:["Biochemische Profile (z. B. API-Tests) helfen bei der Artenbestimmung durch Nachweis von Enzymen und Stoffwechselprodukten."],terms:['API-Test','Enzyme','Metabolismus'],quiz:null,interview:null,img:null},
+  {id:'s41',category:'molekular',title:'CRISPR in Mikrobiologie',content:["CRISPR/Cas-Systeme sind geneditierbar; in Forschung und Diagnostik genutzt, aber regulatorische Aspekte sind zu beachten."],terms:['CRISPR','Cas','Geneditierung'],quiz:null,interview:null,img:null},
+  {id:'s42',category:'bakterien',title:'Zellmembranlipide',content:["Gram-negative äußere Membran enthält LPS (Endotoxin), wichtig für Immunantworten und Therapieentscheidungen."],terms:['LPS','Endotoxin','äußere Membran'],quiz:null,interview:null,img:null},
+  {id:'s43',category:'viren',title:'Virenaufbau (enveloped vs non-enveloped)',content:["Umhüllte Viren sind empfindlicher gegenüber Desinfektionsmitteln; Nicht-umhüllte Viren sind oft widerstandsfähiger."],terms:['umhüllt','nicht-umhüllt','Desinfektionsmittel'],quiz:null,interview:null,img:null},
+  {id:'s44',category:'pilze',title:'Mykotoxin-Überwachung',content:["Mykotoxine wie Aflatoxine entstehen durch Schimmelpilze; Analyse in Lebensmitteln schützt Verbraucher."],terms:['Aflatoxin','Mykotoxin','Lebensmittelüberwachung'],quiz:null,interview:null,img:null},
+  {id:'s45',category:'parasiten',title:'Vector Control',content:["Bekämpfung von Vektoren (z. B. Mücken) reduziert Parasitenübertragung; Umweltmanagement und Schutzmaßnahmen sind wichtig."],terms:['Vektor','Vector Control','Mücken'],quiz:null,interview:null,img:null},
+  {id:'s46',category:'hygiene',title:'Rückverfolgbarkeit & Recall',content:["Dokumentation von Produktionschargen und mikrobiologische Tests ermöglicht gezielte Rückrufe bei Kontamination."],terms:['Rückverfolgbarkeit','Recall','Chargendokumentation'],quiz:null,interview:null,img:null},
+  {id:'s47',category:'molekular',title:'Metagenomik',content:["Metagenomik analysiert komplexe Mikrobiome ohne Kultivierung; nützlich für Umweltproben, Humanmikrobiom und Outbreak-Analysen."],terms:['Metagenomik','Mikrobiom','Outbreak'],quiz:null,interview:null,img:null},
+  {id:'s48',category:'allg',title:'Mikrobiom & Gesundheit',content:["Das menschliche Mikrobiom beeinflusst Immunität, Stoffwechsel und Krankheitsanfälligkeit; dysbiose assoziiert mit diversen Erkrankungen."],terms:['Mikrobiom','Dysbiose','Immunität'],quiz:null,interview:null,img:null},
+  {id:'s49',category:'bakterien',title:'Horizontaler Gentransfer',content:["Transformation, Transduktion und Konjugation verbreiten Gene zwischen Bakterien; klinisch relevant für Resistenzausbreitung."],terms:['Transformation','Transduktion','Konjugation'],quiz:null,interview:null,img:null},
+  {id:'s50',category:'allg',title:'Ethik & Datenschutz',content:["Bei patientenbezogenen Proben sind Datenschutz, Einverständnis und ethische Richtlinien zu beachten, besonders bei genetischen Daten."],terms:['Datenschutz','Einverständnis','ethische Richtlinien'],quiz:null,interview:null,img:null}
+ ],
+ dictionary: [
+  /* A compact but useful dictionary (de->en). For brevity this is a substantial sample — you can extend it. */
+  {de:"Bakterien",en:"bacteria"},{de:"Zelle",en:"cell"},{de:"Viren",en:"viruses"},{de:"Pilze",en:"fungi"},
+  {de:"Parasit",en:"parasite"},{de:"Kultivierung",en:"cultivation"},{de:"Inkubation",en:"incubation"},{de:"Sterilisation",en:"sterilization"},
+  {de:"Desinfektion",en:"disinfection"},{de:"Autoklav",en:"autoclave"},{de:"Mikroskopie",en:"microscopy"},{de:"Gram-Färbung",en:"Gram stain"},
+  {de:"Peptidoglykan",en:"peptidoglycan"},{de:"Kapsel",en:"capsule"},{de:"Flagelle",en:"flagella"},{de:"Pili",en:"pili"},
+  {de:"PCR",en:"polymerase chain reaction"},{de:"qPCR",en:"quantitative PCR"},{de:"Sequenzierung",en:"sequencing"},
+  {de:"Plasmid",en:"plasmid"},{de:"Konjugation",en:"conjugation"},{de:"Transformation",en:"transformation"},
+  {de:"Antibiotikum",en:"antibiotic"},{de:"Resistenz",en:"resistance"},{de:"MIC",en:"minimum inhibitory concentration"},
+  {de:"Diskdiffusion",en:"disk diffusion"},{de:"Betalaktam",en:"beta-lactam"},{de:"Betalaktamase",en:"beta-lactamase"},
+  {de:"Infektion",en:"infection"},{de:"Pathogen",en:"pathogen"},{de:"Virulenz",en:"virulence"},
+  {de:"Biofilm",en:"biofilm"},{de:"Endospore",en:"endospore"},{de:"Hyphen",en:"hyphae"},
+  {de:"Mykotoxin",en:"mycotoxin"},{de:"HACCP",en:"Hazard Analysis and Critical Control Points"},
+  {de:"Legionellen",en:"Legionella"},{de:"Salmonellen",en:"Salmonella"},{de:"Listerien",en:"Listeria"},
+  {de:"E. coli",en:"E. coli"},{de:"Antigen",en:"antigen"},{de:"Antikörper",en:"antibody"},
+  {de:"Serologie",en:"serology"},{de:"ELISA",en:"enzyme-linked immunosorbent assay"},{de:"Plattenzählung",en:"plate count"},
+  {de:"Membranfiltration",en:"membrane filtration"},{de:"Hygiene",en:"hygiene"},{de:"PSA",en:"PPE"},
+  {de:"SOP",en:"standard operating procedure"},{de:"Validierung",en:"validation"},{de:"Ringversuch",en:"proficiency testing"},
+  {de:"MALDI-TOF",en:"MALDI-TOF mass spectrometry"},{de:"Proteomik",en:"proteomics"},{de:"Metagenomik",en:"metagenomics"},
+  {de:"Kontamination",en:"contamination"},{de:"Präanalytik",en:"preanalytics"},{de:"Ct-Wert",en:"cycle threshold"},
+  {de:"Aliquot",en:"aliquot"},{de:"Inhibitor",en:"inhibitor"},{de:"RNase",en:"RNase"},
+  {de:"cDNA",en:"cDNA"},{de:"Reverse Transkriptase",en:"reverse transcriptase"},{de:"Sonde",en:"probe"},
+  {de:"FISH",en:"fluorescence in situ hybridization"},{de:"SARS-CoV-2",en:"SARS-CoV-2"},{de:"Influenza",en:"influenza"},
+  {de:"Antimykotikum",en:"antifungal agent"},{de:"Azol",en:"azole"},{de:"Echinocandin",en:"echinocandin"},
+  {de:"CRISPR",en:"CRISPR"}, {de:"Cas",en:"Cas protein"}, {de:"Gewebe",en:"tissue"},
+  {de:"Zytopathie",en:"cytopathic effect"},{de:"Plaque-Assay",en:"plaque assay"},{de:"PFU",en:"plaque-forming units"},
+  {de:"Endotoxin",en:"endotoxin"},{de:"LPS",en:"lipopolysaccharide"},{de:"Porin",en:"porin"},
+  {de:"Effluxpumpe",en:"efflux pump"},{de:"Virulenzfaktor",en:"virulence factor"},{de:"Toxin",en:"toxin"},
+  {de:"Adhäsin",en:"adhesin"},{de:"Invasin",en:"invasin"},{de:"Sporulation",en:"sporulation"},
+  {de:"Neutropenie",en:"neutropenia"},{de:"Nosokomial",en:"nosocomial"},{de:"Epidemiologie",en:"epidemiology"},
+  {de:"Outbreak",en:"outbreak"},{de:"Sequenztypisierung",en:"sequence typing"},{de:"Referenzdatenbank",en:"reference database"},
+  {de:"Hepatitis B",en:"Hepatitis B"},{de:"Impfmanagement",en:"vaccination management"},{de:"Datenschutz",en:"data protection"},
+  {de:"Ethik",en:"ethics"},{de:"ISO 15189",en:"ISO 15189"},{de:"EUCAST",en:"EUCAST"},
+  {de:"CLSI",en:"CLSI"},{de:"Sputum",en:"sputum"},{de:"Nasopharyngeal‑Abstrich",en:"nasopharyngeal swab"}
+  /* You can add more terms here; the app supports large lists */
+ ]
+};
+
+/* =============
+ Utility & Render
+ ============= */
+const categoriesEl = document.getElementById('categories');
+const topicsEl = document.getElementById('topics');
+const dictListEl = document.getElementById('dictList');
+const dictSearchEl = document.getElementById('dictSearch');
+const globalSearchEl = document.getElementById('globalSearch');
+const searchBtn = document.getElementById('searchBtn');
+const popover = document.getElementById('popover');
+const focusDictBtn = document.getElementById('focusDict');
+
+let notesKey = 'microbio_notes_v1';
+let globalNotesKey = 'microbio_globalnotes_v1';
+let favoritesKey = 'microbio_favs_v1';
+let favs = JSON.parse(localStorage.getItem(favoritesKey)||'{}');
+
+/* Render categories */
+function renderCategories(){
+  categoriesEl.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'cat-btn active';
+  allBtn.textContent = 'Alle Kategorien';
+  allBtn.dataset.cat = 'all';
+  categoriesEl.appendChild(allBtn);
+  data.categories.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.textContent = c.title;
+    btn.dataset.cat = c.id;
+    categoriesEl.appendChild(btn);
+  });
+}
+renderCategories();
+
+/* Render topics for current category (default all) */
+function renderTopics(filterCat='all',searchTerm=''){
+  topicsEl.innerHTML = '';
+  const topics = data.topics.filter(t=>{
+    if(filterCat !== 'all' && t.category !== filterCat) return false;
+    if(searchTerm){
+      const s = searchTerm.toLowerCase();
+      if(!(t.title.toLowerCase().includes(s) || (t.content && t.content.join(' ').toLowerCase().includes(s)))) return false;
+    }
+    return true;
+  });
+  if(topics.length===0) topicsEl.innerHTML='<div class="small">Keine Themen gefunden.</div>';
+  topics.forEach(t=>{
+    const div = document.createElement('div');
+    div.className='topic';
+    div.id = t.id;
+    const head = document.createElement('div'); head.className='head';
+    const h = document.createElement('h3'); h.innerHTML = t.title;
+    const meta = document.createElement('div'); meta.className='meta';
+    const cat = data.categories.find(c=>c.id===t.category);
+    const chip = document.createElement('div'); chip.className='chip'; chip.textContent = cat?cat.title:'';
+    const favBtn = document.createElement('button'); favBtn.className='smallbtn'; favBtn.textContent = favs[t.id]?'★':'☆';
+    favBtn.title = 'Als Favorit markieren';
+    favBtn.onclick = (e)=>{
+      e.stopPropagation();
+      favs[t.id] = favs[t.id]?0:1;
+      localStorage.setItem(favoritesKey,JSON.stringify(favs));
+      favBtn.textContent = favs[t.id]?'★':'☆';
+    };
+    meta.appendChild(chip); meta.appendChild(favBtn);
+    head.appendChild(h); head.appendChild(meta);
+    const body = document.createElement('div'); body.className='body';
+    // content paragraphs
+    if(t.content && t.content.length){
+      t.content.forEach(p=>{
+        const pEl = document.createElement('p'); pEl.innerHTML = p;
+        body.appendChild(pEl);
+      });
+    }
+    // image placeholder
+    const img = document.createElement('div'); img.className='img-placeholder'; img.innerHTML = 'Bild / Diagramm';
+    body.appendChild(img);
+    // modern methods callout
+    if(t.title.toLowerCase().includes('pcr') || (t.terms && t.terms.some(x=>/PCR|qPCR|Sequenz/i.test(x)))){
+      const mm = document.createElement('div'); mm.className='small'; mm.style.marginTop='8px';
+      mm.innerHTML = '<strong>Moderne Methoden:</strong> PCR / qPCR / Sequenzierung werden oft eingesetzt — genaue Protokolle beachten.';
+      body.appendChild(mm);
+    }
+    // notes area per topic
+    const noteLabel = document.createElement('div'); noteLabel.className='small'; noteLabel.style.marginTop='10px'; noteLabel.textContent = 'Notiz zu diesem Thema:';
+    const noteTA = document.createElement('textarea'); noteTA.style.width='100%'; noteTA.style.height='80px';
+    const savedNotes = JSON.parse(localStorage.getItem(notesKey)||'{}');
+    noteTA.value = (savedNotes[t.id]||'');
+    noteTA.addEventListener('input',()=>{
+      const all = JSON.parse(localStorage.getItem(notesKey)||'{}');
+      all[t.id] = noteTA.value;
+      localStorage.setItem(notesKey,JSON.stringify(all));
+    });
+    body.appendChild(noteLabel); body.appendChild(noteTA);
+    // quiz if present
+    if(t.quiz){
+      const quiz = document.createElement('div'); quiz.className='quiz';
+      const qh = document.createElement('h4'); qh.textContent = 'Mini-Quiz';
+      quiz.appendChild(qh);
+      const qp = document.createElement('div'); qp.textContent = t.quiz.q; qp.style.marginBottom='8px';
+      quiz.appendChild(qp);
+      const answers = document.createElement('div'); answers.className='answers';
+      t.quiz.options.forEach((opt,i)=>{
+        const a = document.createElement('div'); a.className='answer'; a.textContent = opt;
+        a.onclick = ()=>{
+          if(i===t.quiz.answer){ a.classList.add('correct'); a.textContent = opt + ' ✅ Richtig'; }
+          else { a.classList.add('wrong'); a.textContent = opt + ' ❌ Falsch'; 
+            // reveal correct
+            const corr = Array.from(answers.children)[t.quiz.answer];
+            corr.classList.add('correct'); corr.textContent = t.quiz.options[t.quiz.answer] + ' ✅ Richtig';
+          }
+        };
+        answers.appendChild(a);
+      });
+      quiz.appendChild(answers);
+      body.appendChild(quiz);
+    }
+    // interview if present
+    if(t.interview){
+      const inter = document.createElement('div'); inter.className='interview';
+      const ih = document.createElement('h4'); ih.textContent='Interview‑Vorbereitung';
+      const iq = document.createElement('div'); iq.style.fontWeight='600'; iq.textContent = 'Frage: ' + t.interview.q;
+      const ia = document.createElement('div'); ia.style.marginTop='6px'; ia.textContent = 'Musterantwort (DE): ' + t.interview.a;
+      inter.appendChild(ih); inter.appendChild(iq); inter.appendChild(ia);
+      body.appendChild(inter);
+    }
+
+    div.appendChild(head); div.appendChild(body);
+    head.onclick = ()=>{ div.classList.toggle('open'); };
+    topicsEl.appendChild(div);
+  });
+  // augment highlighted terms with event listeners
+  attachTermListeners();
+}
+
+/* Render dictionary (initial) */
+function renderDictionary(filter=''){
+  dictListEl.innerHTML='';
+  const list = data.dictionary.filter(d=>{
+    if(!filter) return true;
+    const s = filter.toLowerCase();
+    return d.de.toLowerCase().includes(s) || d.en.toLowerCase().includes(s);
+  }).slice(0,300); // limit initial render
+  list.forEach(item=>{
+    const li = document.createElement('li'); li.className='dict-item';
+    const left = document.createElement('div'); left.innerHTML = `<div class="dict-term">${item.de}</div><div class="dict-mean">${item.en}</div>`;
+    const right = document.createElement('div');
+    const btn = document.createElement('button'); btn.className='smallbtn'; btn.textContent = favs['dict_'+item.de]? '★':'☆';
+    btn.onclick = (e)=>{ e.stopPropagation(); favs['dict_'+item.de]=favs['dict_'+item.de]?0:1; localStorage.setItem(favoritesKey,JSON.stringify(favs)); btn.textContent = favs['dict_'+item.de]?'★':'☆'; };
+    right.appendChild(btn);
+    li.appendChild(left); li.appendChild(right);
+    li.onclick = ()=>{ showPopoverForWord(item.de,item.en); };
+    dictListEl.appendChild(li);
+  });
+}
+
+/* Popover to show translations & quick-add to favorites */
+function showPopoverForWord(de,en,x=window.event){
+  popover.innerHTML = `<div style="font-weight:700">${de}</div><div class="small" style="margin-top:6px">${en}</div>`;
+  popover.classList.add('visible');
+  // position near cursor if possible
+  const ev = x;
+  let left = (ev && ev.clientX)?ev.clientX:window.innerWidth/2;
+  let top = (ev && ev.clientY)?ev.clientY:window.innerHeight/2;
+  popover.style.left = (left+12)+'px'; popover.style.top = (top+12)+'px';
+}
+
+/* Hide popover on click outside */
+document.addEventListener('click',(e)=>{
+  if(!e.target.closest('.term') && !e.target.closest('.dict-item')) popover.classList.remove('visible');
+});
+
+/* Attach listeners to terms inside topic content and dictionary search */
+function attachTermListeners(){
+  document.querySelectorAll('.term').forEach(el=>{
+    el.onclick = (ev)=>{
+      ev.stopPropagation();
+      const en = el.dataset.en || '';
+      const de = el.textContent;
+      showPopoverForWord(de,en,ev);
+    };
+    el.onmouseenter = (ev)=>{
+      // small tooltip near element
+      const en = el.dataset.en || '';
+      popover.innerHTML = `<div style="font-weight:700">${el.textContent}</div><div class="small" style="margin-top:6px">${en}</div>`;
+      popover.classList.add('visible');
+      const rect = el.getBoundingClientRect();
+      popover.style.left = (rect.right + 8) + 'px';
+      popover.style.top = (rect.top) + 'px';
+    };
+    el.onmouseleave = ()=>{ popover.classList.remove('visible'); };
+  });
+}
+
+/* Event wiring */
+document.querySelectorAll('.categories').forEach(()=>{}); // placeholder
+document.getElementById('categories').addEventListener('click',(e)=>{
+  if(!e.target.classList.contains('cat-btn')) return;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  const cat = e.target.dataset.cat;
+  renderTopics(cat || 'all', globalSearchEl.value.trim());
+});
+
+searchBtn.onclick = ()=>{ performSearch(); };
+
+function performSearch(){
+  const q = globalSearchEl.value.trim();
+  if(!q){ renderTopics('all',''); return; }
+  // search topics and dictionary; show topics that match
+  renderTopics('all', q);
+  // highlight matching dictionary entries
+  renderDictionary(q);
+}
+
+/* Dictionary search */
+dictSearchEl.addEventListener('input',()=>{ renderDictionary(dictSearchEl.value.trim()); });
+document.getElementById('dictClear').onclick = ()=>{ dictSearchEl.value=''; renderDictionary(''); };
+
+/* Focus dictionary with Alt+K */
+document.addEventListener('keydown',(e)=>{
+  if(e.altKey && e.key.toLowerCase()==='k'){ e.preventDefault(); dictSearchEl.focus(); }
+});
+focusDictBtn.onclick = ()=>{ dictSearchEl.focus(); };
+
+/* Global notes save */
+document.getElementById('saveGlobal').onclick = ()=>{ localStorage.setItem(globalNotesKey,document.getElementById('globalNotes').value); alert('Global notes saved locally.'); };
+document.getElementById('clearGlobal').onclick = ()=>{ if(confirm('Global notes löschen?')){ document.getElementById('globalNotes').value=''; localStorage.removeItem(globalNotesKey); } };
+document.getElementById('exportAll').onclick = exportNotes;
+document.getElementById('importAll').onclick = importNotes;
+
+/* Export notes */
+function exportNotes(){
+  const allNotes = JSON.parse(localStorage.getItem(notesKey)||'{}');
+  const global = localStorage.getItem(globalNotesKey)||'';
+  const payload = {notes:allNotes,global};
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'microbio_notes_export.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Import notes */
+function importNotes(){
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
+  inp.onchange = ()=>{ const f = inp.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ try{
+    const j = JSON.parse(r.result); if(j.notes) localStorage.setItem(notesKey,JSON.stringify(j.notes)); if(j.global) localStorage.setItem(globalNotesKey,j.global);
+    alert('Notizen importiert. Seite neu laden, um sie zu sehen.');
+  }catch(err){ alert('Fehler beim Import: ' + err.message); } }; r.readAsText(f); };
+  inp.click();
+}
+
+/* Init */
+(function init(){
+  renderDictionary();
+  renderTopics('all','');
+  const g = localStorage.getItem(globalNotesKey)||'';
+  document.getElementById('globalNotes').value = g;
+})();
+
+/* Enhance: allow clicking dictionary terms to insert into search */
+dictListEl.addEventListener('click',(e)=>{
+  const li = e.target.closest('.dict-item');
+  if(!li) return;
+});
+
+/* Accessibility: ensure topic open state remembered in URL hash */
+window.addEventListener('hashchange',()=>{
+  const id = location.hash.replace('#','');
+  if(id) document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+});
+
+</script>
+</body>
+</html>
